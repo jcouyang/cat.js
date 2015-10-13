@@ -1,15 +1,20 @@
 {
   "name": "cat.js",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Category Theory with JavaScript",
   "main": "cat.js",
   "scripts": {
     "build": "rm -rf build && tsc && browserify build/cat.js -o cat.js",
+    "prepublish": "npm run build",
     "watch": "tsc -w",
     "test": "npm run build && mocha --recursive --harmony",
     "testW": "mocha --recursive --harmony -w",
     "doc": "dox -a cat.js > docs/api.md"
   },
+  "files": [
+    "build",
+    "cat.js"
+  ],
   "author": "Jichao Ouyang",
   "license": "MIT",
   "devDependencies": {

@@ -10,7 +10,7 @@ export interface Functor<A> {
 	fmap<A,B>(func:(A)=>B):Functor<B>;
 }
 
-interface AtoBfunc {
+export interface AtoBfunc {
 	<A,B>(A):B;
 }
 

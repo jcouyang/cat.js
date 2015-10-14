@@ -2,7 +2,7 @@ const Maybe = require('../../build/monad/maybe'),
       Just = Maybe.Just,
       just = Maybe.just,
       nothing = Maybe.nothing,
-      maybe = Maybe.maybe
+      maybe = Maybe.maybe,
       should = require('should');
 const id = _=>_,
       f = _=>_+1,
@@ -31,6 +31,19 @@ describe('Maybe', function() {
     })
   })
 
+  describe('aplicative rules', function() {
+    it('#1 identity', function() {
+      just(id).fapply(just(2)).eql(just(2)).should.be.true;
+    })
+    it('#2 homomorphism', function() {
+      just(f).fapply(just(2)).eql(just(3)).should.be.true;
+    })
+    it('#3 interchange', function() {
+      just(f).fapply(just(2)).eql(just(f=>f(2)).fapply(just(f))).should.be.true;
+    })
+
+
+  })
   describe('monoid rules', function() {
     it('should concat whats inside Maybe', function() {
       just(2).mappend(just(3)).eql(just(5)).should.be.true;

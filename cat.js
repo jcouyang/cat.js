@@ -14,21 +14,48 @@ var Nothing = (function () {
         this.pure = this.mreturn;
         this.value = undefined;
     }
+    /**
+     * Monoid append
+     * ```js
+     * nothing.mappend(just(3)).eql(nothing)
+     * ```
+     */
     Nothing.prototype.mappend = function (m) {
         return m;
     };
     Nothing.prototype.mjoin = function () {
         return this;
     };
+    /**
+     * Functor fmap
+     *
+     * ```js
+     * nothing.fmap(id).eql(nothing);
+     * ```
+     */
     Nothing.prototype.fmap = function (func) {
         return this;
     };
     Nothing.prototype.mreturn = function (v) {
         return new Nothing;
     };
+    /**
+     * Monad join
+     *
+     * ```js
+     * nothing.join().eql(nothing)
+     * ```
+     */
     Nothing.prototype.mbind = function (func) {
         return this;
     };
+    /**
+     * Applicative apply
+     *
+     * ```js
+     * nothing.fapply(just(2)).eql(nothing)
+     * ```
+     */
     Nothing.prototype.fapply = function (m) {
         return this;
     };
@@ -40,8 +67,7 @@ var Nothing = (function () {
 exports.Nothing = Nothing;
 var Just = (function () {
     function Just(value) {
-        // Monoid
-        this.mempty = new Nothing;
+        this.mempty = exports.nothing;
         this.pure = Just.of;
         this.mreturn = this.pure;
         this.value = value;
@@ -50,30 +76,54 @@ var Just = (function () {
         return new Just(value);
     };
     /**
-     * ##Monoid append
+     * Monoid append
      * ```js
-     * this.fmap(a=>m.fmap(b=>a+b)).mjoin();
+     * just(2).mappend(just(3)).eql(just(5))
      * ```
-     * @param {Maybe}
-     * @return {Maybe}
-     * @api public
      */
     Just.prototype.mappend = function (m) {
         return this.fmap(function (a) { return m.fmap(function (b) { return a + b; }); }).mjoin();
     };
-    //Applicative
+    /**
+     * Applicative apply
+     *
+     * ```js
+     * just(id).fapply(just(2)).eql(just(2))
+     * ```
+     */
     Just.prototype.fapply = function (m) {
         var _this = this;
         return m.fmap(function (_) { return _this.value(_); });
     };
-    // Functor
+    /**
+     * Functor fmap
+     *
+     * ```js
+     * just(2).fmap(id).eql(just(2));
+     * ```
+     */
     Just.prototype.fmap = function (func) {
         return new Just(func(this.value));
     };
-    // Monad
+    /**
+     * Monad join
+     *
+     * ```js
+     * just(just(3)).mjoin().eql(just(3)).should.be.true
+     * ```
+     * `Maybe Maybe a -> Maybe a`
+     */
     Just.prototype.mjoin = function () {
         return this.mbind(id);
     };
+    /**
+     * Monad bind =<<
+     *
+     * ```js
+     * just(2).mbind(f).should.eql(f(2));
+     * ```
+     * `Maybe a -> (a -> Maybe b) -> Maybe b`
+     */
     Just.prototype.mbind = function (func) {
         return func(this.value);
     };
@@ -84,15 +134,27 @@ var Just = (function () {
     return Just;
 })();
 exports.Just = Just;
-// alias of constructor
+/**
+ * alias to Just's constructor
+ */
 function just(value) { return new Just(value); }
 exports.just = just;
 ;
+/**
+ * alias to Nothing()
+ */
 exports.nothing = new Nothing();
-//maybe :: b -> (a -> b) -> Maybe a -> b 
+/**
+ * maybe function
+ *
+ * apply function f to Maybe a, if Nothing, return default value
+ *
+ * `maybe :: b -> (a -> b) -> Maybe a -> b`
+ *
+ */
 function maybe(dv, f, m) {
     if (m instanceof Just) {
-        return f(m.mbind(function (_) { return _; }));
+        return f(m.mjoin());
     }
     else {
         return dv;

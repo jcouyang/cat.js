@@ -7,3 +7,4 @@ deployment:
     commands:
       - ./ci/npm-login.sh
       - npm publish
+      - ./ci/publish-doc.sh

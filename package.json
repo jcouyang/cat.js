@@ -9,7 +9,7 @@
     "watch": "tsc -w",
     "test": "npm run build && mocha --recursive --harmony",
     "testW": "mocha --recursive --harmony -w",
-    "doc": "typedoc --out docs src"
+    "doc": "typedoc --out api src"
   },
   "files": [
     "build",

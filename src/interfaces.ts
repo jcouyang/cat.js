@@ -19,7 +19,7 @@ export interface Applicative<C> extends Functor<C>{
 	pure<C>(v:C):Applicative<C>;
 }
 
-export interface Monad<A> extends Applicative<A> {
+export interface Monad<A> {
 	mbind<B>(func:(A)=>Monad<A|B>):Monad<A|B>;
 	mreturn(v:A):Monad<A>
 }

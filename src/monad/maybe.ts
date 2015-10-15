@@ -1,6 +1,6 @@
 import I = require("../interfaces");
 
-interface Maybe<A> extends I.Monad<A>, I.Monoid, I.Equivable{
+interface Maybe<A> extends I.Monad<A>, I.Functor<A>, I.Monoid, I.Equivable{
 	mjoin(): Maybe<A>;
 }
 const id = _=>_;

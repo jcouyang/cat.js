@@ -1,6 +1,6 @@
 import I = require("../interfaces");
 
-interface Either<A> extends I.Applicative<A>, I.Monad<A>, I.Equivable{
+interface Either<A> extends I.Applicative<A>, I.Monad<A>, I.Foldable<A>, I.Equivable{
 }
 class Alias {
 	constructor(){}
@@ -54,6 +54,27 @@ export class Right<A> extends Alias implements Either<A>{
 	mjoin() {
 		return this.mbind(id);
 	}
+		/**
+	 * Fold
+	 */
+	foldMap(f) {
+		return f(this.value);
+	}
+	
+	foldr<A,B>(f, z:B):B{
+		return f(this.value,z);
+	}
+	
+	foldl<A,B>(f, z:B):B{
+		return f(z,this.value);
+	}
+	
+	fold(){
+		return this.foldMap(id);
+	}
+	length(){
+		return 1;
+	}
 	toString() {
 		return `#<Left #{this.value.toString()}>`
 	}
@@ -105,6 +126,29 @@ export class Left<A> extends Alias implements Either<A> {
 	}
 	mjoin() {
 		return this.mbind(id);
+	}
+	/**
+	 * Fold
+	 */
+	foldMap(_:any) {
+		if (_.mempty) return _.mempty;
+		if (_ instanceof Array) return [];
+		return null;
+	}
+	
+	foldr<A,B>(f, z:B):B{
+		return z
+	}
+	
+	foldl<A,B>(f, z:B):B{
+		return z
+	}
+	
+	fold(){
+		return this.foldMap(id);
+	}
+	length(){
+		return 0;
 	}
 	eql(m: Either<A>):boolean {
 			return JSON.stringify(m) == JSON.stringify(this);

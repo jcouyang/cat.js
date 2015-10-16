@@ -1,5 +1,2 @@
-import {Just,Nothing,just,nothing,maybe} from './monad/maybe';
-
-export {
-	Just,Nothing,just,nothing,maybe,
-}
+export {Just, Nothing, just, nothing, maybe} from './monad/maybe';
+export {Left, Right, left, right, either} from './monad/either';

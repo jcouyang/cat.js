@@ -2,14 +2,14 @@
   "name": "cat.js",
   "version": "0.0.2",
   "description": "Category Theory with JavaScript",
-  "main": "cat.js",
+  "main": "./build/cat.js",
   "scripts": {
     "build": "rm -rf build && tsc && browserify build/cat.js -o cat.js",
     "prepublish": "npm run build",
     "watch": "tsc -w",
     "test": "npm run build && mocha --recursive --harmony",
     "testW": "mocha --recursive --harmony -w",
-    "doc": "typedoc --out api src"
+    "doc": "typedoc --out api src --module commonjs"
   },
   "files": [
     "build",

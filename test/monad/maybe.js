@@ -36,7 +36,7 @@ describe('Maybe', function() {
       just(id).fapply(just(2)).eql(just(2)).should.be.true;
     })
     it('#2 homomorphism', function() {
-      just(f).fapply(just(2)).eql(just(3)).should.be.true;
+      just(f).fapply(just(2)).eql(just(f(2))).should.be.true;
     })
     it('#3 interchange', function() {
       just(f).fapply(just(2)).eql(just(f=>f(2)).fapply(just(f))).should.be.true;
@@ -52,6 +52,11 @@ describe('Maybe', function() {
     it('should be it self if mappend Nothing', function() {
       just(2).mappend(nothing).eql(just(2)).should.be.true;
       nothing.mappend(just(2)).eql(just(2)).should.be.true;
+    })
+    it('associativity', function() {
+      just(2).mappend(just(1)).mappend(just(3)).eql(
+        just(2).mappend(just(1).mappend(just(3)))
+      ).should.be.true;
     })
   })
   
@@ -69,6 +74,13 @@ describe('Maybe', function() {
     })
   })
 
+  describe('foldabale', function() {
+    it('can fold value', function() {
+      just(1).foldl((a,b)=>just(a+b), 1).eql(just(2)).should.be.true;
+      nothing.foldl((a,b)=>just(a+b), 1).should.eql(1);  
+    })
+  })
+  
   describe('maybe function', function() {
     it('apply function if Maybe is Just', function() {
       maybe(false, Boolean, Just(2)).should.be.true;

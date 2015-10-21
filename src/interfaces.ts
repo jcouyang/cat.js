@@ -7,8 +7,6 @@ export interface Monoid<A> extends Semigroup<A>{
 }
 
 export interface Foldable<A> {
-	fold(m: Monoid<A>):Monoid<A>;
-	foldMap<A,B>(f:(A)=>Monoid<B>):Monoid<B>;
 	foldr<A,B>(f:(A,B)=>B, b:B):B;
 	foldl<A,B>(f:(B,A)=>B, b:B):B
 }

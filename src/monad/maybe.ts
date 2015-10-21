@@ -1,6 +1,6 @@
 import I = require("../interfaces");
 
-interface Maybe<A> extends I.Monad<A>, I.Functor<A>, I.Monoid<A>, I.Equivable{
+interface Maybe<A> extends I.Monad<A>, I.Functor<A>, I.Foldable<A>, I.Monoid<A>, I.Equivable{
 	mjoin(): Maybe<A>;
 }
 const id = _=>_;
@@ -55,6 +55,11 @@ export class Nothing<A> implements Maybe<A>{
 	fapply(m) {
 		return this
 	}
+	foldr(_:any, z:A){
+		return z;
+	}
+	foldl = this.foldr;
+	
 	pure = this.mreturn;
 	eql(m: Maybe<A>):boolean {
 			return false;
@@ -128,6 +133,13 @@ export class Just<A> implements Maybe<A> {
 		return func(this.value);
 	}
 	
+	/**
+	 * Foldable foldl
+	 */
+	foldl<A,B,C>(f:(A,B)=>Maybe<C>, z:A){
+		return f(z,this.value)
+	}
+	foldr = this.foldl;
 	eql(m: Maybe<A>):boolean {
 			return maybe(false, _=> JSON.stringify(this.value) == JSON.stringify(_), m);
 	}

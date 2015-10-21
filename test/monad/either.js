@@ -59,6 +59,13 @@ describe('Either', function() {
     })
   })
 
+  describe('foldabale', function() {
+    it('can fold value', function() {
+      right(1).foldl((a,b)=>right(a+b), 1).eql(right(2)).should.be.true;
+      left(1).foldl((a,b)=>right(a+b), 1).should.eql(1);   
+    })
+  })
+  
   describe('either function', function() {
     it('apply right function', function() {
       either(f, g, right(2)).should.be.eql(0);

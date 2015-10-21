@@ -2,6 +2,9 @@
 
 **Ca**tegory **T**heory for **J**ava**S**cript
 
+[![Circle CI](https://circleci.com/gh/jcouyang/cat.js.svg?style=svg)](https://circleci.com/gh/jcouyang/cat.js)
+[![NPM](https://img.shields.io/npm/v/cat.js.svg)](https://www.npmjs.com/package/cat.js)
+
 :joy_cat: :smirk_cat: :scream_cat: :heart_eyes_cat:
 
 ## Install

@@ -4,7 +4,9 @@
   "description": "Category Theory with JavaScript",
   "main": "./build/cat.js",
   "scripts": {
-    "build": "rm -rf build && tsc && browserify build/cat.js -o cat.js",
+    "minify": "java -jar ci/compiler.jar --js dist/cat.js --compilation_level ADVANCED_OPTIMIZATIONS --js_output_file dist/cat.min.js",
+    "browserify": "browserify build/cat.js -o dist/cat.js",
+    "build": "rm -rf build && tsc && npm run browserify && npm run minify",
     "prepublish": "npm run build",
     "watch": "tsc -w",
     "test": "npm run build && mocha --recursive --harmony",
@@ -13,6 +15,7 @@
   },
   "files": [
     "build",
+    "dist",
     "cat.js"
   ],
   "author": "Jichao Ouyang",

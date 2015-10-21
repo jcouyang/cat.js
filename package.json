@@ -1,6 +1,6 @@
 {
   "name": "cat.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Category Theory with JavaScript",
   "main": "./build/cat.js",
   "scripts": {

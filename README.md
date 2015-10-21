@@ -17,8 +17,8 @@ maybe(false, Boolean, just(2))
 // => true
 ```
 ## Document
-[User Guide comming soon...but if you can read chinese->>](#wendang)
-[API](http://oyanglul.us/cat.js/)
+- [User Guide comming soon...but if you can read chinese->>](#文档)
+- [API](http://oyanglul.us/cat.js/)
 
 :joy_cat: :smirk_cat: :scream_cat: :heart_eyes_cat:
 
@@ -38,28 +38,29 @@ maybe(false, Boolean, just(2))
 // => true
 ```
 ## 文档
-[User Guide](./docs/README.md)
-[API](http://oyanglul.us/cat.js/)
+- [User Guide](./docs/README.md)
+- [API](http://oyanglul.us/cat.js/)
 
 
 ## Todos
 - [ ] Maybe
-  - [ ] Monoid
-  - [ ] Functor
-  - [ ] Applicative
-  - [ ] Foldable
+  - [X] Monoid
+  - [X] Functor
+  - [X] Applicative
+  - [X] Foldable
   - [ ] Traversable
-  - [ ] Monad
+  - [X] Monad
   - [ ] MonadFix
   - [ ] MonadPlus
 - [ ] Either
-  - [ ] Monoid
-  - [ ] Functor
-  - [ ] Applicative
-  - [ ] Foldable
+  - [X] Monoid
+  - [X] Functor
+  - [X] Applicative
+  - [X] Foldable
   - [ ] Traversable
-  - [ ] Monad
+  - [X] Monad
   - [ ] MonadFix
-  - [ ] MonadPlus  
+  - [ ] MonadPlus
 - [ ] Try
-- [ ] 
+- [ ] Native
+- [-] Docs

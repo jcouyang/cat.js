@@ -1,4 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
 var maybe_1 = require('./monad/maybe');
 exports.Just = maybe_1.Just;
 exports.Nothing = maybe_1.Nothing;
@@ -13,6 +14,7 @@ exports.right = either_1.right;
 exports.either = either_1.either;
 
 },{"./monad/either":2,"./monad/maybe":3}],2:[function(require,module,exports){
+"use strict";
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -25,7 +27,7 @@ var Alias = (function () {
         return JSON.stringify(m) == JSON.stringify(this);
     };
     return Alias;
-})();
+}());
 var id = function (_) { return _; };
 var Right = (function (_super) {
     __extends(Right, _super);
@@ -94,7 +96,7 @@ var Right = (function (_super) {
         return "#<Left #{this.value.toString()}>";
     };
     return Right;
-})(Alias);
+}(Alias));
 exports.Right = Right;
 var Left = (function (_super) {
     __extends(Left, _super);
@@ -171,7 +173,7 @@ var Left = (function (_super) {
         return "#<Left #{this.value.toString()}>";
     };
     return Left;
-})(Alias);
+}(Alias));
 exports.Left = Left;
 /**
  * alias to Just's constructor
@@ -201,6 +203,7 @@ function either(l, r, e) {
 exports.either = either;
 
 },{}],3:[function(require,module,exports){
+"use strict";
 var id = function (_) { return _; };
 var Nothing = (function () {
     function Nothing() {
@@ -261,11 +264,15 @@ var Nothing = (function () {
         return false;
     };
     return Nothing;
-})();
+}());
 exports.Nothing = Nothing;
+/**
+ * alias to Nothing()
+ */
+exports.nothing = new Nothing;
 var Just = (function () {
     function Just(value) {
-        this.mempty = exports.nothing;
+        this.mempty = new Nothing;
         this.pure = Just.of;
         this.mreturn = this.pure;
         this.foldr = this.foldl;
@@ -337,7 +344,7 @@ var Just = (function () {
         return maybe(false, function (_) { return JSON.stringify(_this.value) == JSON.stringify(_); }, m);
     };
     return Just;
-})();
+}());
 exports.Just = Just;
 /**
  * alias to Just's constructor
@@ -345,10 +352,6 @@ exports.Just = Just;
 function just(value) { return new Just(value); }
 exports.just = just;
 ;
-/**
- * alias to Nothing()
- */
-exports.nothing = new Nothing();
 /**
  * maybe function
  *

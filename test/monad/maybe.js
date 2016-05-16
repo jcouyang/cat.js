@@ -83,7 +83,7 @@ describe('Maybe', function() {
   
   describe('maybe function', function() {
     it('apply function if Maybe is Just', function() {
-      maybe(false, Boolean, Just(2)).should.be.true;
+      maybe(false, Boolean, Just.of(2)).should.be.true;
     })
     it('return default if Maybe is Nothing', function() {
       maybe(false, Boolean, nothing).should.be.false;

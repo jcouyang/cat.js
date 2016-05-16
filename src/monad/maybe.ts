@@ -65,7 +65,10 @@ export class Nothing<A> implements Maybe<A>{
 			return false;
 	}
 }
-
+/**
+ * alias to Nothing()
+ */
+export const nothing = new Nothing;
 export class Just<A> implements Maybe<A> {
 	private value;
 	static of(value) {
@@ -149,10 +152,7 @@ export class Just<A> implements Maybe<A> {
  * alias to Just's constructor
  */
 export function just(value) { return new Just(value); };
-/**
- * alias to Nothing()
- */
-export const nothing = new Nothing();
+
 /**
  * maybe function
  * 

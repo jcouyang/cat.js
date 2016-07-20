@@ -1,28 +1,10 @@
-import Type from 'union-type';
-import merge from 'ramda/src/merge.js';
-const Any = () => true;
-const TypeClass = Type({Functor: [Any],
-                        Applicative: [Any],
-                        Monad: [Any],
-                        Show:[Any]});
-const Instance = Type({
-  instance: [TypeClass],
-});
-const instance = Instance.instance;
+import Type from 'union-type'
+import TypeClass, {instance} from '../typeclass'
 
-Instance.prototype.where = function(implement) {
-  TypeClass.case({
-    Functor: a => a.prototype = merge(a.prototype,implement),
-    Applicative: a => a.prototype = merge(a.prototype,implement),
-    Monad: a => a.prototype = merge(a.prototype,implement),
-    Show: a => a.prototype.toString = implement.toString,
-  }, this[0]);
-}
-
-const Maybe = Type({Just: [Any], Nothing: []});
+const Maybe = Type({Just: [Type.Any], Nothing: []});
 
 instance(TypeClass.Functor(Maybe)).where({
-  map: function(f){
+  fmap: function(f){
     return Maybe.case({
       Just: a => Maybe.Just(f(a)),
       Nothing: () => Nothing(),
@@ -34,7 +16,7 @@ instance(TypeClass.Applicative(Maybe)).where({
   pure: Maybe.Just,
   ap: function(m) {
     return Maybe.case({
-      Just: f => m.map(f),
+      Just: f => m.fmap(f),
       Nothing: () => Nothing(),
     }, this)
   }
@@ -51,13 +33,27 @@ instance(TypeClass.Monad(Maybe)).where({
   }
 });
 
+instance(TypeClass.Eq(Maybe)).where({
+  eq: function(other){
+    return Maybe.case({
+      Just: x => Maybe.case({
+        Just: y => x == y,
+        Nothing: false
+      }, other),
+      Nothing: () => Maybe.case({
+        Just: y => false,
+        Nothing: true
+      }, other)
+    }, this)
+  }
+})
 instance(TypeClass.Show(Maybe)).where({
-  toString: function(){
+  show: function(){
     return Maybe.case({
       Just: x => `Just(${x})`,
       Nothing: ()=>"Nothing",
     },this)
   }
-})
+});
 
 export default Maybe;

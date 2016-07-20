@@ -1,92 +1,99 @@
-const Maybe = require('../../build/monad/maybe'),
-      Just = Maybe.Just,
-      just = Maybe.just,
-      nothing = Maybe.nothing,
-      maybe = Maybe.maybe,
-      should = require('should');
-const id = _=>_,
-      f = _=>_+1,
-      g = _=>_-2;
-      
-describe('Maybe', function() {
-  describe('init', function() {
-    it('constructor', function() {
-      Just.of(3).value.should.be.eql(3)
-    })
-    
-    it('join will take value out',function() {
-      just(3).mjoin().should.eql(3);
-      Just.of(3).mjoin().should.eql(3);
-    })
-  })
+import test from 'tape';
+import {check, gen, property } from 'testcheck';
+import Maybe from '../../src/monad/maybe.js'
+const Just = Maybe.Just
+const Nothing = Maybe.Nothing
+let id = _ => _
 
-  describe('functor rules', function() {
-    it('#1 identity', function() {
-      just(2).fmap(id).eql(just(2));
-    })
-    it('#2 composition', function() {
-      just(2).fmap(x=>f(g(x))).eql(
-        just(2).fmap(g).fmap(f)
-      )
-    })
-  })
-
-  describe('aplicative rules', function() {
-    it('#1 identity', function() {
-      just(id).fapply(just(2)).eql(just(2)).should.be.true;
-    })
-    it('#2 homomorphism', function() {
-      just(f).fapply(just(2)).eql(just(f(2))).should.be.true;
-    })
-    it('#3 interchange', function() {
-      just(f).fapply(just(2)).eql(just(f=>f(2)).fapply(just(f))).should.be.true;
-    })
-
-
-  })
-  describe('monoid rules', function() {
-    it('should concat whats inside Maybe', function() {
-      just(2).mappend(just(3)).eql(just(5)).should.be.true;
-      just([2]).mappend(just([3])).eql(just([2,3])).should.be.true;
-    })
-    it('should be it self if mappend Nothing', function() {
-      just(2).mappend(nothing).eql(just(2)).should.be.true;
-      nothing.mappend(just(2)).eql(just(2)).should.be.true;
-    })
-    it('associativity', function() {
-      just(2).mappend(just(1)).mappend(just(3)).eql(
-        just(2).mappend(just(1).mappend(just(3)))
-      ).should.be.true;
-    })
-  })
+test('Functor rules', t => {
+  t.plan(2)
   
-  describe('monad rules', function() {
-    it('#1 left identity', function() {
-      just(2).mbind(f).should.eql(f(2));
-    })
-    it('#2 right identity', function() {
-      just(2).mbind(Just.of).eql(just(2)).should.be.true;
-    })
-    it('#3 associativity', function() {
-      var f = _=>just(_=>_+1),
-          g = _=>just(_=>_-2)
-      just(2).mbind(f).mbind(g).eql(just(2).mbind(x=>f(x).mbind(g))).should.be.true
-    })
-  })
+  t.true(check(
+    property(
+      [gen.int],
+      a => Just(a).fmap(id).eq(Just(a))
+    )
+  ).result, 'identity')
 
-  describe('foldabale', function() {
-    it('can fold value', function() {
-      just(1).foldl((a,b)=>just(a+b), 1).eql(just(2)).should.be.true;
-      nothing.foldl((a,b)=>just(a+b), 1).should.eql(1);  
-    })
-  })
-  
-  describe('maybe function', function() {
-    it('apply function if Maybe is Just', function() {
-      maybe(false, Boolean, Just.of(2)).should.be.true;
-    })
-    it('return default if Maybe is Nothing', function() {
-      maybe(false, Boolean, nothing).should.be.false;
-    })
-  })
+  let f = x=>x+3
+  let g = x=>x*5
+  t.true(check(
+    property(
+      [gen.int],
+      a => Just(a).fmap(x=>f(g(x))).eq(Just(a).fmap(g).fmap(f))
+    )
+  ).result, 'composition')
 })
+
+test('applicative rules', t=>{
+  t.plan(3)
+
+  t.true(check(property(
+    [gen.int],
+    a => Just(id).ap(Just(a)).eq(Just(a))
+  )).result, 'identity')
+
+  let f = _ => _ + 1
+  t.true(check(property(
+    [gen.int],
+    a => Just(f).ap(Just(a)).eq(Just(f(a)))
+  )).result, 'homomorphism')
+  
+  t.true(check(property(
+    [gen.int],
+    a => Just(f).ap(Just(a)).eq(Just(f=>f(a)).ap(Just(f)))
+  )).result, 'interchange')
+})
+
+
+//   describe('monad rules', function() {
+//     it('#1 left identity', function() {
+//       just(2).mbind(f).should.eql(f(2));
+//     })
+//     it('#2 right identity', function() {
+//       just(2).mbind(Just.of).eql(just(2)).should.be.true;
+//     })
+//     it('#3 associativity', function() {
+//       var f = _=>just(_=>_+1),
+//           g = _=>just(_=>_-2)
+//       just(2).mbind(f).mbind(g).eql(just(2).mbind(x=>f(x).mbind(g))).should.be.true
+//     })
+//   })
+
+test('monad rules', t =>{
+  t.plan(3)
+  let mf = x => Just(x+1)
+  let f = x => x+1
+  t.true(check(property(
+    [gen.int],
+    a => Just(a).mbind(mf).eq(Just(f(a)))
+  )).result, 'left identity')
+
+  t.true(check(property(
+    [gen.int],
+    a => Just(a).mbind(Just).eq(Just(a))
+  )).result, 'right identity')
+
+  let mg = x=> Just(x * 5)
+  t.true(check(property(
+    [gen.int],
+    a => Just(a).mbind(mf).mbind(mg).eq(Just(a).mbind(x=>mf(x).mbind(mg)))
+  )).result, 'associativity')
+})
+
+//   describe('monoid rules', function() {
+//     it('should concat whats inside Maybe', function() {
+//       just(2).mappend(just(3)).eql(just(5)).should.be.true;
+//       just([2]).mappend(just([3])).eql(just([2,3])).should.be.true;
+//     })
+//     it('should be it self if mappend Nothing', function() {
+//       just(2).mappend(nothing).eql(just(2)).should.be.true;
+//       nothing.mappend(just(2)).eql(just(2)).should.be.true;
+//     })
+//     it('associativity', function() {
+//       just(2).mappend(just(1)).mappend(just(3)).eql(
+//         just(2).mappend(just(1).mappend(just(3)))
+//       ).should.be.true;
+//     })
+//   })
+  
